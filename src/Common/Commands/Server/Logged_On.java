@@ -1,6 +1,6 @@
-package Commands.Server;
+package Common.Commands.Server;
 
-import Commands.Command;
+import Common.Commands.Command;
 
 public class Logged_On extends Command {
     private String name;

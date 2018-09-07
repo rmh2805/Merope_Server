@@ -1,6 +1,6 @@
-package Commands.Errors;
+package Common.Commands.Errors;
 
-import Commands.Command;
+import Common.Commands.Command;
 
 public class Not_Logged_On extends Command {
 

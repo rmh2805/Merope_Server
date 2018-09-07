@@ -1,6 +1,6 @@
-package Commands.Server;
+package Common.Commands.Server;
 
-import Commands.Command;
+import Common.Commands.Command;
 
 public class Change_Ack extends Command {
     private String newName;

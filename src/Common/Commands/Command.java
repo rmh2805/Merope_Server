@@ -1,11 +1,8 @@
-package Commands;
+package Common.Commands;
 
-import Commands.Client.*;
-import Commands.Errors.Bad_Name;
-import Commands.Errors.Bad_Target;
-import Commands.Errors.Malformed_Command;
-import Commands.Errors.Not_Logged_On;
-import Commands.Server.*;
+import Common.Commands.Client.*;
+import Common.Commands.Errors.*;
+import Common.Commands.Server.*;
 
 public abstract class Command {
     //-----------------------------------------<Fields>------------------------------------------//
@@ -41,6 +38,7 @@ public abstract class Command {
     //Server Command Tags
     public final static String BROADCAST_GET = "BROADCAST_GET";
     public final static String CHANGE_ACK = "CHANGE_ACK";
+    public final static String CONNECTION_ACK = "CONNECTION_ACK";
     public final static String LIST_GET = "LIST_GET";
     public final static String LOGGED_OFF = "LOGGED_OFF";
     public final static String LOGGED_ON = "LOGGED_ON";
@@ -54,55 +52,68 @@ public abstract class Command {
     public final static String MALFORMED_COMMAND = "MALFORMED_COMMAND";
 
     //--------------------------------------<Statics>---------------------------------------//
+
+    /**
+     * A command factory. Turns a received command string back into a Command
+     *
+     * @param received The command received over the net
+     * @return The fully parsed command. Null if passed a null String
+     */
     public static Command mkCommand(String received) {
-        String[] data = received.trim().split(Command.separator, 2);
-        if (data.length == 2) {
-            String[] subData = data[1].split(separator, 2);
-            switch (data[0]) {
-                case BROADCAST_SEND:
-                    return new Broadcast_Send(data[1]);
-                case CHANGE_NAME:
-                    return new Change_Name(data[1]);
-                case LOG_OFF:
-                    return new Log_Off(data[1]);
-                case LOG_ON:
-                    return new Log_On(data[1]);
-                case WHISPER_SEND:
-                    return new Whisper_Send(subData[0], subData[1]);
-                case BAD_NAME:
-                    return new Bad_Name(data[1]);
-                case BAD_TARGET:
-                    return new Bad_Target(data[1]);
-                case MALFORMED_COMMAND:
-                    return new Malformed_Command(data[1]);
-                case BROADCAST_GET:
-                    return new Broadcast_Get(subData[0], subData[1]);
-                case CHANGE_ACK:
-                    return new Change_Ack(data[1]);
-                case LOGGED_ON:
-                    return new Logged_On(data[1]);
-                case LOGGED_OFF:
-                    return new Logged_Off(data[1]);
-                case WHISPER_GET:
-                    return new Whisper_Get(subData[0], subData[1]);
-                case WHISPER_SENT:
-                    return new Whisper_Sent(subData[0], subData[1]);
-                case LIST_GET:
-                    return new List_Get(data[1].split(separator));
-                default:
-                    return new Malformed_Command(received, "Too many arguments for the specified tag, or it is" +
-                            "an invalid command");
+        if (received != null) {
+            String[] data = received.trim().split(Command.separator, 2);
+            if (data.length == 2) {
+                String[] subData = data[1].split(separator, 2);
+                switch (data[0]) {
+                    case BROADCAST_SEND:
+                        return new Broadcast_Send(data[1]);
+                    case CHANGE_NAME:
+                        return new Change_Name(data[1]);
+                    case LOG_OFF:
+                        return new Log_Off(data[1]);
+                    case LOG_ON:
+                        return new Log_On(data[1]);
+                    case WHISPER_SEND:
+                        return new Whisper_Send(subData[0], subData[1]);
+                    case BAD_NAME:
+                        return new Bad_Name(data[1]);
+                    case BAD_TARGET:
+                        return new Bad_Target(data[1]);
+                    case MALFORMED_COMMAND:
+                        return new Malformed_Command(data[1]);
+                    case BROADCAST_GET:
+                        return new Broadcast_Get(subData[0], subData[1]);
+                    case CHANGE_ACK:
+                        return new Change_Ack(data[1]);
+                    case LOGGED_ON:
+                        return new Logged_On(data[1]);
+                    case LOGGED_OFF:
+                        return new Logged_Off(data[1]);
+                    case WHISPER_GET:
+                        return new Whisper_Get(subData[0], subData[1]);
+                    case WHISPER_SENT:
+                        return new Whisper_Sent(subData[0], subData[1]);
+                    case LIST_GET:
+                        return new List_Get(data[1].split(separator));
+                    default:
+                        return new Malformed_Command(received, "Too many arguments for the specified tag, or it is" +
+                                "an invalid command");
+                }
+            } else {
+                switch (data[0]) {
+                    case CONNECTION_ACK:
+                        return new Connection_Ack();
+                    case LIST_REQUEST:
+                        return new List_Request();
+                    case NOT_LOGGED_ON:
+                        return new Not_Logged_On();
+                    default:
+                        return new Malformed_Command(received, "Too few arguments for the specified tag, or an " +
+                                "invalid tag");
+                }
             }
         } else {
-            switch (data[0]) {
-                case LIST_REQUEST:
-                    return new List_Request();
-                case NOT_LOGGED_ON:
-                    return new Not_Logged_On();
-                default:
-                    return new Malformed_Command(received, "Too few arguments for the specified tag, or an " +
-                            "invalid tag");
-            }
+            return null;
         }
     }
     //---------------------------------------<Public>---------------------------------------//
@@ -125,6 +136,10 @@ public abstract class Command {
      */
     public String getTag() {
         return tag;
+    }
+
+    public String getPayload() {
+        return payload;
     }
 
     /**

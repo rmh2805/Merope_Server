@@ -1,6 +1,6 @@
-package Commands.Client;
+package Common.Commands.Client;
 
-import Commands.Command;
+import Common.Commands.Command;
 
 public class List_Request extends Command {
     public List_Request() {

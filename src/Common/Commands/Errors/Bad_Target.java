@@ -1,6 +1,6 @@
-package Commands.Errors;
+package Common.Commands.Errors;
 
-import Commands.Command;
+import Common.Commands.Command;
 
 public class Bad_Target extends Command {
     private String name;
