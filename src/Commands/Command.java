@@ -90,7 +90,8 @@ public abstract class Command {
                 case LIST_GET:
                     return new List_Get(data[1].split(separator));
                 default:
-                    return new Malformed_Command(received);
+                    return new Malformed_Command(received, "Too many arguments for the specified tag, or it is" +
+                            "an invalid command");
             }
         } else {
             switch (data[0]) {
@@ -98,9 +99,10 @@ public abstract class Command {
                     return new List_Request();
                 case NOT_LOGGED_ON:
                     return new Not_Logged_On();
-
+                default:
+                    return new Malformed_Command(received, "Too few arguments for the specified tag, or an " +
+                            "invalid tag");
             }
-            return new Malformed_Command(received);
         }
     }
     //---------------------------------------<Public>---------------------------------------//
