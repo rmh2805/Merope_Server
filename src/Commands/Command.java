@@ -1,5 +1,12 @@
 package Commands;
 
+import Commands.Client.*;
+import Commands.Errors.Bad_Name;
+import Commands.Errors.Bad_Target;
+import Commands.Errors.Malformed_Command;
+import Commands.Errors.Not_Logged_On;
+import Commands.Server.*;
+
 public abstract class Command {
     //-----------------------------------------<Fields>------------------------------------------//
     //--------------------------------------<Statics>---------------------------------------//
@@ -24,28 +31,78 @@ public abstract class Command {
     }
 
     //Client Command Tags
-    public static String LOG_ON = "LOG_ON";
-    public static String BROADCAST_SEND = "BROADCAST_SEND";
-    public static String WHISPER_SEND = "WHISPER_SEND";
-    public static String LIST_REQUEST = "LIST_REQUEST";
-    public static String CHANGE_NAME = "CHANGE_NAME";
-    public static String LOG_OFF = "LOG_OFF";
+    public final static String BROADCAST_SEND = "BROADCAST_SEND";
+    public final static String CHANGE_NAME = "CHANGE_NAME";
+    public final static String LIST_REQUEST = "LIST_REQUEST";
+    public final static String LOG_OFF = "LOG_OFF";
+    public final static String LOG_ON = "LOG_ON";
+    public final static String WHISPER_SEND = "WHISPER_SEND";
 
     //Server Command Tags
-    public static String LOGGED_ON = "LOGGED_ON";
-    public static String BROADCAST_GET = "BROADCAST_GET";
-    public static String WHISPER_SENT = "WHISPER_SENT";
-    public static String WHISPER_GET = "WHISPER_GET";
-    public static String LIST_GET = "LIST_GET";
-    public static String CHANGE_ACK = "CHANGE_ACK";
-    public static String LOGGED_OFF = "LOGGED_OFF";
+    public final static String BROADCAST_GET = "BROADCAST_GET";
+    public final static String CHANGE_ACK = "CHANGE_ACK";
+    public final static String LIST_GET = "LIST_GET";
+    public final static String LOGGED_OFF = "LOGGED_OFF";
+    public final static String LOGGED_ON = "LOGGED_ON";
+    public final static String WHISPER_GET = "WHISPER_GET";
+    public final static String WHISPER_SENT = "WHISPER_SENT";
 
     //Error Tags
-    public static String BAD_NAME = "BAD_NAME";
-    public static String BAD_TARGET = "BAD_TARGET";
-    public static String NOT_LOGGED_ON = "NOT_LOGGED_ON";
-    public static String MALFORMED_COMMAND = "MALFORMED_COMMAND";
+    public final static String BAD_NAME = "BAD_NAME";
+    public final static String BAD_TARGET = "BAD_TARGET";
+    public final static String NOT_LOGGED_ON = "NOT_LOGGED_ON";
+    public final static String MALFORMED_COMMAND = "MALFORMED_COMMAND";
 
+    //--------------------------------------<Statics>---------------------------------------//
+    public static Command mkCommand(String received) {
+        String[] data = received.trim().split(Command.separator, 2);
+        if (data.length == 2) {
+            String[] subData = data[1].split(separator, 2);
+            switch (data[0]) {
+                case BROADCAST_SEND:
+                    return new Broadcast_Send(data[1]);
+                case CHANGE_NAME:
+                    return new Change_Name(data[1]);
+                case LOG_OFF:
+                    return new Log_Off(data[1]);
+                case LOG_ON:
+                    return new Log_On(data[1]);
+                case WHISPER_SEND:
+                    return new Whisper_Send(subData[0], subData[1]);
+                case BAD_NAME:
+                    return new Bad_Name(data[1]);
+                case BAD_TARGET:
+                    return new Bad_Target(data[1]);
+                case MALFORMED_COMMAND:
+                    return new Malformed_Command(data[1]);
+                case BROADCAST_GET:
+                    return new Broadcast_Get(subData[0], subData[1]);
+                case CHANGE_ACK:
+                    return new Change_Ack(data[1]);
+                case LOGGED_ON:
+                    return new Logged_On(data[1]);
+                case LOGGED_OFF:
+                    return new Logged_Off(data[1]);
+                case WHISPER_GET:
+                    return new Whisper_Get(subData[0], subData[1]);
+                case WHISPER_SENT:
+                    return new Whisper_Sent(subData[0], subData[1]);
+                case LIST_GET:
+                    return new List_Get(data[1].split(separator));
+                default:
+                    return new Malformed_Command(received);
+            }
+        } else {
+            switch (data[0]) {
+                case LIST_REQUEST:
+                    return new List_Request();
+                case NOT_LOGGED_ON:
+                    return new Not_Logged_On();
+
+            }
+            return new Malformed_Command(received);
+        }
+    }
     //---------------------------------------<Public>---------------------------------------//
 
     /**
