@@ -1,11 +1,11 @@
-package Network_Layer;
+package Common.Network_Layer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client_Socket {
+public class ClientSocket {
     public static final String k_New_Line = ":n:";
 
     private Socket socket;
@@ -19,7 +19,7 @@ public class Client_Socket {
      * @param port The port the server is listening on
      * @throws IOException Thrown if socket creation fails
      */
-    public Client_Socket(String address, int port) throws IOException {
+    public ClientSocket(String address, int port) throws IOException {
         this(new Socket(address, port));
     }
 
@@ -30,7 +30,7 @@ public class Client_Socket {
      * @throws IOException If getting the input or output stream of the socket fails
      * @throws NullPointerException If provided with a null socket
      */
-    public Client_Socket(Socket socket) throws IOException, NullPointerException {
+    public ClientSocket(Socket socket) throws IOException, NullPointerException {
         if(socket == null){
             throw new NullPointerException("Null socket provided");
         }
@@ -40,7 +40,7 @@ public class Client_Socket {
     /**
      * A default constructor for child classes (to make switching viable
      */
-    protected Client_Socket(){
+    protected ClientSocket(){
         socket = null;
         writer = null;
         reader = null;
