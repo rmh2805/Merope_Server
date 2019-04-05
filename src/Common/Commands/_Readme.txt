@@ -1,0 +1,1 @@
+The Client Package contains messages sent by the client, and the same philosophy holds for the Server Package

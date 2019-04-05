@@ -1,4 +1,4 @@
-package Common.Network_Layer;
+package Network_Layer;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -8,4 +8,4 @@ Puropse:
 
 Project Log:
     1/12/19:Started current iteration
-                * Work started on the Common.Network_Layer branch (Low level implementation of network infrastructure)
+                * Work started on the Network_Layer branch (Low level implementation of network infrastructure)
